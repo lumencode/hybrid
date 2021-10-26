@@ -1,0 +1,32 @@
+version: "3.8"
+
+volumes:
+  hybrid:
+
+services:
+  api:
+    build: "./backend"
+    restart: on-failure
+    ports:
+      - "4000:4000"
+    environment:
+      - GIN_MODE=release
+      - DB_HOST=db
+      - DB_USER=muhammad
+      - DB_PASSWORD=xyz
+      - DB_PORT=5432
+      - DB_NAME=hybrid
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+  db:
+    image: postgres:14.0-alpine
+    environment:
+      - POSTGRES_USER=muhammad
+      - POSTGRES_PASSWORD=xyz
+      - POSTGRES_DB=hybrid
+    ports:
+      - "5432:5432"
+    volumes:
+      - hybrid:/var/lib/postgres
